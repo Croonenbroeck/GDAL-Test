@@ -45,6 +45,7 @@ namespace GDAL_Test
             OSGeo.OSR.SpatialReference ToSRS = new OSGeo.OSR.SpatialReference(null);
             ToSRS.ImportFromEPSG(4326);
             ToSRS.SetAxisMappingStrategy(OSGeo.OSR.AxisMappingStrategy.OAMS_TRADITIONAL_GIS_ORDER);
+            ToSRS.ExportToWkt(out CheckSRS, null);
 
             OSGeo.OSR.CoordinateTransformation CT = new OSGeo.OSR.CoordinateTransformation(FromSRS, ToSRS);
 

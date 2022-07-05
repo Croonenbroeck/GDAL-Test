@@ -27,6 +27,8 @@ namespace GDAL_Test
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // Frage siehe https://gis.stackexchange.com/questions/435057/c-gdal-spatial-transformation-reprojection-always-fails
+
             MaxRev.Gdal.Core.GdalBase.ConfigureAll();
             OSGeo.OGR.Ogr.RegisterAll();
 

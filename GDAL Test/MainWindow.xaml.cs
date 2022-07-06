@@ -50,7 +50,14 @@ namespace GDAL_Test
             ToSRS.SetAxisMappingStrategy(OSGeo.OSR.AxisMappingStrategy.OAMS_TRADITIONAL_GIS_ORDER);
             ToSRS.ExportToWkt(out CheckSRS, null);
 
+            //OSGeo.OGR.DataSource NewDS = drv.CreateDataSource("/vsimem/Temporary", new string[] { });
+            OSGeo.OGR.DataSource NewDS = drv.CreateDataSource(@"C:\Users\croonenbroeck\source\repos\Prototyp\Testdata\Test.shp", new string[] { });
+            OSGeo.OGR.Layer NewLayer = NewDS.CreateLayer(MyLayer.GetName() + "_WGS84", ToSRS, MyLayer.GetGeomType(), new string[] { });
+
             OSGeo.OSR.CoordinateTransformation CT = new OSGeo.OSR.CoordinateTransformation(FromSRS, ToSRS);
+
+            OSGeo.OGR.FeatureDefn MyFeatureDefn = MyLayer.GetLayerDefn();
+            OSGeo.OGR.FeatureDefn outLayerDefn = MyLayer.GetLayerDefn();
 
             OSGeo.OGR.Geometry OGRGeom;
             for (long i = 0; i < MyLayer.GetFeatureCount(0); i++)
@@ -59,8 +66,29 @@ namespace GDAL_Test
 
                 if (OGRGeom.Transform(CT) != 0) System.Diagnostics.Debug.WriteLine("Error during projection.");
 
-                OGRGeom.AssignSpatialReference(ToSRS); //Even necessary after transformation?
+                OSGeo.OGR.Feature OutFeature = new OSGeo.OGR.Feature(MyFeatureDefn);
+                OutFeature.SetGeometry(OGRGeom);
+                for (int j = 0; j < outLayerDefn.GetFieldCount(); j++)
+                {
+                    // Liste unvollständig...
+
+                    if (MyLayer.GetFeature(i).GetFieldType(j) == OSGeo.OGR.FieldType.OFTString)
+                        OutFeature.SetField(outLayerDefn.GetFieldDefn(j).GetNameRef(), MyLayer.GetFeature(i).GetFieldAsString(j));
+
+                    if (MyLayer.GetFeature(i).GetFieldType(j) == OSGeo.OGR.FieldType.OFTInteger)
+                        OutFeature.SetField(outLayerDefn.GetFieldDefn(j).GetNameRef(), MyLayer.GetFeature(i).GetFieldAsInteger(j));
+
+                    if (MyLayer.GetFeature(i).GetFieldType(j) == OSGeo.OGR.FieldType.OFTInteger64)
+                        OutFeature.SetField(outLayerDefn.GetFieldDefn(j).GetNameRef(), MyLayer.GetFeature(i).GetFieldAsInteger64(j));
+                }
+
+                NewLayer.CreateFeature(OutFeature);
+                OutFeature.Dispose();
             }
+
+            MyFeatureDefn.Dispose();
+            NewDS.SyncToDisk();
+            drv.Dispose();
         }
     }
 }

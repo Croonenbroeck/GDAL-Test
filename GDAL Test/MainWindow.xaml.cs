@@ -37,7 +37,7 @@ namespace GDAL_Test
             OSGeo.GDAL.Gdal.SetConfigOption("PROJ_DEBUG", "5");
 
             OSGeo.OGR.Driver drv = OSGeo.OGR.Ogr.GetDriverByName("ESRI Shapefile");
-            OSGeo.OGR.DataSource ds = drv.Open(@"C:\Users\croonenbroeck\source\repos\Prototyp\Testdata\Gemeinde.shp", 0);
+            OSGeo.OGR.DataSource ds = drv.Open(@"C:\Users\croonenbroeck\source\repos\Prototyp\Testdata\Gemeinden.shp", 0);
             OSGeo.OGR.Layer MyLayer = ds.GetLayerByIndex(0);
 
             OSGeo.OSR.SpatialReference FromSRS = MyLayer.GetSpatialRef();
@@ -57,7 +57,7 @@ namespace GDAL_Test
             {
                 OGRGeom = MyLayer.GetFeature(i).GetGeometryRef();
 
-                if (OGRGeom.Transform(CT) == 0) System.Diagnostics.Debug.WriteLine("Error during projection.");
+                if (OGRGeom.Transform(CT) != 0) System.Diagnostics.Debug.WriteLine("Error during projection.");
 
                 OGRGeom.AssignSpatialReference(ToSRS); //Even necessary after transformation?
             }

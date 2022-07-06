@@ -64,7 +64,7 @@ namespace GDAL_Test
             {
                 OGRGeom = MyLayer.GetFeature(i).GetGeometryRef();
 
-                if (OGRGeom.Transform(CT) != 0) System.Diagnostics.Debug.WriteLine("Error during projection.");
+                if (OGRGeom.Transform(CT) == 0) System.Diagnostics.Debug.WriteLine("Error during projection.");
 
                 OSGeo.OGR.Feature OutFeature = new OSGeo.OGR.Feature(MyFeatureDefn);
                 OutFeature.SetGeometry(OGRGeom);

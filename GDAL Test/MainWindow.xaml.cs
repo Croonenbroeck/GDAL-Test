@@ -37,10 +37,11 @@ namespace GDAL_Test
             OSGeo.GDAL.Gdal.SetConfigOption("PROJ_DEBUG", "5");
 
             OSGeo.OGR.Driver drv = OSGeo.OGR.Ogr.GetDriverByName("ESRI Shapefile");
-            OSGeo.OGR.DataSource ds = drv.Open(@"C:\Users\[EnterNameHere]\source\repos\Prototyp\Testdata\Gemeinde.shp", 0);
+            OSGeo.OGR.DataSource ds = drv.Open(@"C:\Users\croonenbroeck\source\repos\Prototyp\Testdata\Gemeinde.shp", 0);
             OSGeo.OGR.Layer MyLayer = ds.GetLayerByIndex(0);
 
             OSGeo.OSR.SpatialReference FromSRS = MyLayer.GetSpatialRef();
+            FromSRS.SetAxisMappingStrategy(OSGeo.OSR.AxisMappingStrategy.OAMS_TRADITIONAL_GIS_ORDER);
             string CheckSRS;
             FromSRS.ExportToWkt(out CheckSRS, null);
 
